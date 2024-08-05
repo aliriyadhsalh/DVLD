@@ -65,3 +65,5 @@ To add a new person or user, navigate to the "Add Person/User" section in the ap
 1. Go to the "Replace Lost License" section.
 2. Pay the service fee for issuing a new license.
 
+
+
