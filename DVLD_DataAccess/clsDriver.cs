@@ -1,0 +1,167 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static DVLD_DataAccess.clsCountryData;
+using System.Net;
+using System.Security.Policy;
+
+namespace DVLD_DataAccess
+{
+    public class clsDriverData
+    {
+
+        public static bool GetDriverInfoByDriverID(int DriverID, 
+            ref int PersonID,ref int CreatedByUserID,ref DateTime CreatedDate )
+            {
+                bool isFound = false;
+
+                SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+
+                string query = "SELECT * FROM Drivers WHERE DriverID = @DriverID";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@DriverID", DriverID);
+
+                try
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+
+                        // The record was found
+                        isFound = true;
+
+                    PersonID = (int)reader["PersonID"];
+                    CreatedByUserID = (int)reader["CreatedByUserID"];
+                    CreatedDate = (DateTime)reader["CreatedDate"];
+
+
+                }
+                    else
+                    {
+                        // The record was not found
+                        isFound = false;
+                    }
+
+                    reader.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                clsPrimaryFunctions.EntireInfoToEventLoge(ex.Message);
+                isFound = false;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+                return isFound;
+            }
+
+        public static bool GetDriverInfoByPersonID(int PersonID,ref int DriverID,
+            ref int CreatedByUserID,ref DateTime CreatedDate)
+        {
+            bool isFound = false;
+
+            SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
+
+            string query = "SELECT * FROM Drivers WHERE PersonID = @PersonID";
+
+            SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@PersonID", PersonID);
+
+            try
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+
+                    // The record was found
+                    isFound = true;
+
+                    DriverID = (int)reader["DriverID"];
+                    CreatedByUserID = (int)reader["CreatedByUserID"];
+                    CreatedDate = (DateTime)reader["CreatedDate"];
+
+                }
+                else
+                {
+                    // The record was not found
+                    isFound = false;
+                }
+
+                reader.Close();
+
+
+            }
+            catch (Exception ex)
+            {
+                clsPrimaryFunctions.EntireInfoToEventLoge(ex.Message);
+                isFound = false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+            return isFound;
+        }
+
+        public static DataTable GetAllDrivers()
+            {
+                string query = "SELECT * FROM Drivers_View order by FullName";
+
+            SqlCommand command = new SqlCommand(query);
+
+            return clsPrimaryFunctions.Get(new SqlCommand(query));
+
+        }
+
+        public static int AddNewDriver( int PersonID, int CreatedByUserID)
+        {
+            string query = @"Insert Into Drivers (PersonID,CreatedByUserID,CreatedDate)
+                            Values (@PersonID,@CreatedByUserID,@CreatedDate);
+                          
+                            SELECT SCOPE_IDENTITY();";
+
+
+            SqlCommand command = new SqlCommand(query);
+            command.Parameters.AddWithValue("@PersonID", PersonID);
+            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+            command.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
+
+            return clsPrimaryFunctions.Add(command);
+
+        }
+
+        public static bool UpdateDriver(int DriverID, int PersonID, int CreatedByUserID)
+        {
+
+            string query = @"Update  Drivers  
+                            set PersonID = @PersonID,
+                                CreatedByUserID = @CreatedByUserID
+                                where DriverID = @DriverID";
+
+            SqlCommand command = new SqlCommand(query);
+
+            command.Parameters.AddWithValue("@DriverID", DriverID);
+            command.Parameters.AddWithValue("@PersonID", PersonID);
+            command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+
+            return clsPrimaryFunctions.Update(command);
+
+        }
+    }
+}
