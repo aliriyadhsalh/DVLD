@@ -29,20 +29,10 @@ Driver Vehicle Licenses Department is a comprehensive application designed to ma
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/username/DriverVehicleLicensesDepartment.git
+    git clone https://github.com/aliriyadhsalh/DVLD.git
     ```
-2. Navigate to the project directory:
-    ```sh
-    cd DriverVehicleLicensesDepartment
-    ```
-3. Install dependencies:
-    ```sh
-    npm install
-    ```
-4. Run the application:
-    ```sh
-    npm start
-    ```
+2. Run the application:
+ 
 
 ## Usage
 
